@@ -22,3 +22,12 @@ parseLocation location =
 
         Nothing ->
             NotFoundRoute
+
+playersPath : String
+playersPath =
+    "#players"
+
+
+playerPath : PlayerId -> String
+playerPath id =
+    "#players/" ++ id
