@@ -23,6 +23,9 @@ page model =
         Models.PlayerRoute id ->
             playerEditPage model id
 
+        Models.PlayerNewRoute ->
+            
+
         Models.NotFoundRoute ->
             notFoundView
 
