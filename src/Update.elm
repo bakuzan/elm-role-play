@@ -2,7 +2,7 @@ module Update exposing (..)
 
 import Routing exposing (parseLocation)
 import Msgs exposing (Msg)
-import Commands exposing (savePlayerCmd)
+import Commands exposing (savePlayerCmd, deletePlayerCmd)
 import Models exposing (Model, Player, PlayerId)
 import RemoteData
 
@@ -32,8 +32,14 @@ update msg model =
         Msgs.OnPlayerSave (Err error) ->
             ( model, Cmd.none )
 
-        Msgs.OnPlayerDelete playerId ->
+        Msgs.RemovePlayer playerId ->
+          (model, deletePlayerCmd playerId)
+
+        Msgs.OnPlayerDelete (Ok playerId) ->
             ( deletePlayer model playerId, Cmd.none )
+
+        Msgs.OnPlayerDelete (Err error) ->
+            ( model, Cmd.none )
 
 updatePlayer : Model -> Player -> Model
 updatePlayer model updatedPlayer =

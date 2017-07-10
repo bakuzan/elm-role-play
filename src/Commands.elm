@@ -67,3 +67,21 @@ playerEncoder player =
             ]
     in
         Encode.object attributes
+
+
+deletePlayerRequest : PlayerId -> Http.Request PlayerId
+deletePlayerRequest playerId =
+    Http.request
+        { body = Http.emptyBody
+        , expect = Http.expectStringResponse (\response -> Ok playerId)
+        , headers = []
+        , method = "DELETE"
+        , timeout = Nothing
+        , url = savePlayerUrl playerId
+        , withCredentials = False
+        }
+
+deletePlayerCmd : PlayerId -> Cmd Msg
+deletePlayerCmd playerId =
+    deletePlayerRequest playerId
+        |> Http.send Msgs.OnPlayerDelete

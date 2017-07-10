@@ -83,7 +83,7 @@ deleteBtn : Player -> Html.Html Msg
 deleteBtn player =
     let
         message =
-            Msgs.OnPlayerDelete player.id
+            Msgs.RemovePlayer player.id
     in
       a [ class "btn ml1 h1", onClick message ]
         [ i [ class "fa fa-times" ] [] ]
