@@ -26,6 +26,13 @@ update msg model =
             in
               ( model, savePlayerCmd updatedPlayer )
 
+        Msgs.ChangeName player newName ->
+          let
+            updatedPlayer =
+              { player | name = newName }
+          in
+          (model, savePlayerCmd updatedPlayer)
+
         Msgs.OnPlayerSave (Ok player) ->
             ( updatePlayer model player, Cmd.none )
 

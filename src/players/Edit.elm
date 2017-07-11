@@ -1,8 +1,8 @@
 module Players.Edit exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, value, href)
-import Html.Events exposing (onClick)
+import Html.Attributes exposing (class, value, href, type_)
+import Html.Events exposing (onClick, onInput)
 import Msgs exposing (Msg)
 import Models exposing (Player)
 import Routing exposing (playersPath)
@@ -24,7 +24,7 @@ nav model =
 form : Player -> Html Msg
 form player =
     div [ class "m3" ]
-        [ h1 [] [ text player.name ]
+        [ input [ type_ "text", value player.name, onInput (Msgs.ChangeName player) ] [ ]
         , formLevel player
         ]
 

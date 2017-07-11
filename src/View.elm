@@ -1,7 +1,7 @@
 module View exposing (..)
 
 import Html exposing (Html, div, text)
-import Models exposing (Model, PlayerId)
+import Models exposing (Model, PlayerId, Player)
 import Msgs exposing (Msg)
 import Players.Edit
 import Players.List
@@ -24,7 +24,7 @@ page model =
             playerEditPage model id
 
         Models.PlayerNewRoute ->
-            
+            playerEditPage model "0"
 
         Models.NotFoundRoute ->
             notFoundView
@@ -45,13 +45,26 @@ playerEditPage model playerId =
                     players
                         |> List.filter (\player -> player.id == playerId)
                         |> List.head
+
+                dropCount =
+                  (List.length players) - 1
+
+                nextId =
+                  players
+                    |> List.sortBy .id
+                    |> List.drop dropCount
+                    |> List.map (\p -> p.id)
+                    |> List.head
+                    |> toString
+                    |> String.toInt
+                    |> Result.withDefault 0
             in
                 case maybePlayer of
                     Just player ->
                         Players.Edit.view player
 
                     Nothing ->
-                        notFoundView
+                        Players.Edit.view (Player (toString (nextId + 1)) "" 0)
 
         RemoteData.Failure err ->
             text (toString err)
