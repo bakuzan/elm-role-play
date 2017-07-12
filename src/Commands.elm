@@ -38,22 +38,30 @@ savePlayerUrl playerId =
     "http://localhost:4000/players/" ++ playerId
 
 
-savePlayerRequest : Player -> Http.Request Player
-savePlayerRequest player =
+savePlayerRequest : Player -> Bool -> Http.Request Player
+savePlayerRequest player isNewPlayer =
+    let
+      method =
+        if isNewPlayer then "POST" else "PATCH"
+
+      url =
+        savePlayerUrl (if isNewPlayer then "" else player.id)
+
+    in
     Http.request
         { body = playerEncoder player |> Http.jsonBody
         , expect = Http.expectJson playerDecoder
         , headers = []
-        , method = "PATCH"
+        , method = method
         , timeout = Nothing
-        , url = savePlayerUrl player.id
+        , url = url
         , withCredentials = False
         }
 
 
-savePlayerCmd : Player -> Cmd Msg
-savePlayerCmd player =
-    savePlayerRequest player
+savePlayerCmd : Player -> Bool -> Cmd Msg
+savePlayerCmd player isNewPlayer=
+    savePlayerRequest player isNewPlayer
         |> Http.send Msgs.OnPlayerSave
 
 

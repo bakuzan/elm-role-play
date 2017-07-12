@@ -23,15 +23,21 @@ update msg model =
             let
               updatedPlayer =
                 { player | level = player.level + howMuch }
+
+              isNewPlayer =
+                List.any (\p -> p.id == updatedPlayer.id) model.players
             in
-              ( model, savePlayerCmd updatedPlayer )
+              ( model, savePlayerCmd updatedPlayer isNewPlayer )
 
         Msgs.ChangeName player newName ->
           let
             updatedPlayer =
               { player | name = newName }
+
+            isNewPlayer =
+              List.any (\p -> p.id == updatedPlayer.id) model.players
           in
-          (model, savePlayerCmd updatedPlayer)
+          ( model, savePlayerCmd updatedPlayer isNewPlayer )
 
         Msgs.OnPlayerSave (Ok player) ->
             ( updatePlayer model player, Cmd.none )

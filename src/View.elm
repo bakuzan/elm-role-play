@@ -6,7 +6,7 @@ import Msgs exposing (Msg)
 import Players.Edit
 import Players.List
 import RemoteData
-
+import Debug exposing (log)
 
 view : Model -> Html Msg
 view model =
@@ -55,9 +55,10 @@ playerEditPage model playerId =
                     |> List.drop dropCount
                     |> List.map (\p -> p.id)
                     |> List.head
-                    |> toString
+                    |> Maybe.withDefault "0"
                     |> String.toInt
                     |> Result.withDefault 0
+
             in
                 case maybePlayer of
                     Just player ->
