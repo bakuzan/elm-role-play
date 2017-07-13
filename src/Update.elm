@@ -25,7 +25,8 @@ update msg model =
                 { player | level = player.level + howMuch }
 
               isNewPlayer =
-                List.any (\p -> p.id == updatedPlayer.id) model.players
+                doesPlayerExist model.players updatedPlayer.id
+
             in
               ( model, savePlayerCmd updatedPlayer isNewPlayer )
 
@@ -35,7 +36,8 @@ update msg model =
               { player | name = newName }
 
             isNewPlayer =
-              List.any (\p -> p.id == updatedPlayer.id) model.players
+              doesPlayerExist model.players updatedPlayer.id
+
           in
           ( model, savePlayerCmd updatedPlayer isNewPlayer )
 
@@ -81,3 +83,15 @@ deletePlayer model playerId =
             RemoteData.map updatePlayerList model.players
     in
         { model | players = updatedPlayers }
+
+
+doesPlayerExist : RemoteData.WebData (List Player) -> PlayerId -> Bool
+doesPlayerExist players playerId =
+  let
+    existingPlayer players =
+      List.filter (\p -> p.id == playerId) players
+
+  in
+  RemoteData.map existingPlayer players
+    |> List.length
+    |> (\v -> v == 0)
