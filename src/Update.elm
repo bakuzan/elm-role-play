@@ -5,6 +5,7 @@ import Msgs exposing (Msg)
 import Commands exposing (savePlayerCmd, deletePlayerCmd)
 import Models exposing (Model, Player, PlayerId)
 import RemoteData
+import Debug
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -25,7 +26,7 @@ update msg model =
                 { player | level = player.level + howMuch }
 
               isNewPlayer =
-                doesPlayerExist model.players updatedPlayer.id
+                not (doesPlayerExist model.players updatedPlayer.id)
 
             in
               ( model, savePlayerCmd updatedPlayer isNewPlayer )
@@ -36,7 +37,7 @@ update msg model =
               { player | name = newName }
 
             isNewPlayer =
-              doesPlayerExist model.players updatedPlayer.id
+              not (doesPlayerExist model.players updatedPlayer.id)
 
           in
           ( model, savePlayerCmd updatedPlayer isNewPlayer )
@@ -88,10 +89,15 @@ deletePlayer model playerId =
 doesPlayerExist : RemoteData.WebData (List Player) -> PlayerId -> Bool
 doesPlayerExist players playerId =
   let
+    checkLength num =
+      num > 0
+
     existingPlayer players =
       List.filter (\p -> p.id == playerId) players
 
   in
   RemoteData.map existingPlayer players
+    |> RemoteData.toMaybe
+    |> Maybe.withDefault []
     |> List.length
-    |> (\v -> v == 0)
+    |> checkLength
